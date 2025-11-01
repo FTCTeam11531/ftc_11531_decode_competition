@@ -370,6 +370,12 @@ public class RobotConstants {
             public static final double kMotorOutputPowerSnail = .35;
 
         }
+
+        public static final class Setpoint {
+
+            public static final double kAutoLoadingLaunchZone = 0.80;
+
+        }
     }
 
     public static final class Intake {
