@@ -91,7 +91,7 @@ public class DrivetrainMecanum extends MecanumDrive {
     private LinearOpMode sysOpMode;
 
     // Drivetrain Settings
-    private DrivetrainMode drivetrainMode = DrivetrainMode.FIELD_CENTRIC;
+    private DrivetrainMode drivetrainMode = DrivetrainMode.ROBOT_CENTRIC;
     private DrivetrainSpeed drivetrainSpeed = DrivetrainSpeed.MEDIUM;
 
 
