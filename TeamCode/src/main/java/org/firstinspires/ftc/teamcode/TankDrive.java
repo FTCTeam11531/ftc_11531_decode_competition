@@ -157,6 +157,10 @@ public final class TankDrive {
 
             this.pose = pose;
         }
+        @Override
+        public void resetRobotHeading() {
+            lazyImu.get().resetYaw();
+        }
 
         @Override
         public void setPose(Pose2d pose) {
