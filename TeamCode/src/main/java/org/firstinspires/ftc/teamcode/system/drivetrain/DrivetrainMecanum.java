@@ -95,15 +95,7 @@ public class DrivetrainMecanum extends MecanumDrive {
     private DrivetrainSpeed drivetrainSpeed = DrivetrainSpeed.MEDIUM;
 
 
-
-    public static class Params {
-
-    }
-
-    public static Params drivetrainParameters = new Params();
-
-
-
+    // Constructor - define super class (MecanumDrive)
     public DrivetrainMecanum(HardwareMap hardwareMap, Pose2d pose) {
         super(hardwareMap, pose);
     }
@@ -143,23 +135,17 @@ public class DrivetrainMecanum extends MecanumDrive {
 
         double modMaintainMotorRatio;
 
-        // Axial = input y
-        // Lateral = input x
-        // Yaw = rotational
-
         double modAxial = (inputAxial * maxOutputPowerPercent);  // Note: pushing stick forward gives negative value
-        double modLateral = (inputLateral * maxOutputPowerPercent);
+        double modLateral = (inputLateral * maxOutputPowerPercent) * RobotConstants.Drivetrain.Configuration.kMotorLateralMovementStrafingCorrection; // Mod to even out strafing
         double modYaw = (inputYaw * maxOutputPowerPercent);
 
         // Get heading value from the IMU
-//        updateOdometry();
-        double botHeading = getRobotHeadingOnBoard();
+        updateOdometry();
+        double botHeading = getRobotHeadingAdj();
 
         // Adjust the lateral and axial movements based on heading
-        double adjLateral = modLateral * Math.cos(-botHeading) - modAxial * Math.sin(-botHeading);
-        double adjAxial = modLateral * Math.sin(-botHeading) + modAxial * Math.cos(-botHeading);
-
-        adjLateral = adjLateral * RobotConstants.Drivetrain.Configuration.kMotorLateralMovementStrafingCorrection; // Mod to even out strafing
+        double adjLateral = modLateral * Math.cos(botHeading) - modAxial * Math.sin(botHeading);
+        double adjAxial = modLateral * Math.sin(botHeading) + modAxial * Math.cos(botHeading);
 
         // Normalize the values so no wheel power exceeds 100%
         // This ensures that the robot maintains the desired motion.

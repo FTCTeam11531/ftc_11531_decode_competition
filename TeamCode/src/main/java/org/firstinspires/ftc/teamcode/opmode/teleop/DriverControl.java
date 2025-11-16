@@ -88,7 +88,7 @@ public class DriverControl extends LinearOpMode {
 
         // System - Vision
         vision.init();
-        vision.setAICameraMode(RobotConstants.Vision.HuskyLens.kLabelCameraModeAprilTag);
+//        vision.setAICameraMode(RobotConstants.Vision.HuskyLens.kLabelCameraModeAprilTag);
 
         // System - Sound
 //        sound.init();
@@ -100,11 +100,11 @@ public class DriverControl extends LinearOpMode {
         while (opModeInInit() && !isStopRequested()) {
 
             // Vision - get apriltag target data
-            listTargetAIObjects = vision.getListAICameraObject();
-
-            if (listTargetAIObjects.length > 0) {
-                targetAIObject = vision.getAICameraObject(listTargetAIObjects);
-            }
+//            listTargetAIObjects = vision.getListAICameraObject();
+//
+//            if (listTargetAIObjects.length > 0) {
+//                targetAIObject = vision.getAICameraObject(listTargetAIObjects);
+//            }
 
             detectedAprilTagIds = vision.getDetectedAprilTagIds();
 
@@ -143,19 +143,19 @@ public class DriverControl extends LinearOpMode {
             telemetry.addData("-", "------------------------------");
             telemetry.addData("-", "-- Vision");
             telemetry.addData("-", "------------------------------");
-            telemetry.addData("Camera Block Count", vision.getListAICameraObject().length);
-            if (targetAIObject != null) {
-                telemetry.addData("-", "------------------------------");
-                telemetry.addData("-", "-- Target Object");
-                telemetry.addData("-", "------------------------------");
-                telemetry.addData("Target ID", targetAIObject.id);
-                telemetry.addData("Target x:", targetAIObject.x);
-                telemetry.addData("Target y:", targetAIObject.y);
-                telemetry.addData("Target width:", targetAIObject.width);
-                telemetry.addData("Target height:", targetAIObject.height);
-                telemetry.addData("Target top:", targetAIObject.top);
-                telemetry.addData("Target left:", targetAIObject.left);
-            }
+//            telemetry.addData("Camera Block Count", vision.getListAICameraObject().length);
+//            if (targetAIObject != null) {
+//                telemetry.addData("-", "------------------------------");
+//                telemetry.addData("-", "-- Target Object");
+//                telemetry.addData("-", "------------------------------");
+//                telemetry.addData("Target ID", targetAIObject.id);
+//                telemetry.addData("Target x:", targetAIObject.x);
+//                telemetry.addData("Target y:", targetAIObject.y);
+//                telemetry.addData("Target width:", targetAIObject.width);
+//                telemetry.addData("Target height:", targetAIObject.height);
+//                telemetry.addData("Target top:", targetAIObject.top);
+//                telemetry.addData("Target left:", targetAIObject.left);
+//            }
 
             telemetry.addData("-", "------------------------------");
             telemetry.addData("-", "-- Detected April Tag ID    --");
@@ -207,11 +207,11 @@ public class DriverControl extends LinearOpMode {
             currOperator.copy(gamepad2);
 
             // Vision - get apriltag target data
-            listTargetAIObjects = vision.getListAICameraObject();
-
-            if (listTargetAIObjects.length > 0) {
-                targetAIObject = vision.getAICameraObject(listTargetAIObjects);
-            }
+//            listTargetAIObjects = vision.getListAICameraObject();
+//
+//            if (listTargetAIObjects.length > 0) {
+//                targetAIObject = vision.getAICameraObject(listTargetAIObjects);
+//            }
 
             detectedAprilTagIds = vision.getDetectedAprilTagIds();
 
@@ -248,6 +248,7 @@ public class DriverControl extends LinearOpMode {
 
 
             // Update Odometry Reading(s)
+            drivetrain.updateOdometry();
 //            drivetrain.updateOdometry();
             drivetrain.updatePoseEstimate();
 
@@ -525,19 +526,19 @@ public class DriverControl extends LinearOpMode {
             telemetry.addData("-","-- Vision");
             telemetry.addData("-","--------------------------------------");
 //            telemetry.addData("alliance", String.format(Locale.US,"{color: %s, red: %d, blue: %d, green: %d}", sysVision.getAllianceColor(), sysVision.getAllianceColorValueRed(), sysVision.getAllianceColorValueBlue(), sysVision.getAllianceColorValueGreen()));
-            telemetry.addData("Camera Block Count", vision.getListAICameraObject().length);
-            if (targetAIObject != null) {
-                telemetry.addData("-", "------------------------------");
-                telemetry.addData("-", "-- Target Object");
-                telemetry.addData("-", "------------------------------");
-                telemetry.addData("Target ID", targetAIObject.id);
-                telemetry.addData("Target x:", targetAIObject.x);
-                telemetry.addData("Target y:", targetAIObject.y);
-                telemetry.addData("Target width:", targetAIObject.width);
-                telemetry.addData("Target height:", targetAIObject.height);
-                telemetry.addData("Target top:", targetAIObject.top);
-                telemetry.addData("Target left:", targetAIObject.left);
-            }
+//            telemetry.addData("Camera Block Count", vision.getListAICameraObject().length);
+//            if (targetAIObject != null) {
+//                telemetry.addData("-", "------------------------------");
+//                telemetry.addData("-", "-- Target Object");
+//                telemetry.addData("-", "------------------------------");
+//                telemetry.addData("Target ID", targetAIObject.id);
+//                telemetry.addData("Target x:", targetAIObject.x);
+//                telemetry.addData("Target y:", targetAIObject.y);
+//                telemetry.addData("Target width:", targetAIObject.width);
+//                telemetry.addData("Target height:", targetAIObject.height);
+//                telemetry.addData("Target top:", targetAIObject.top);
+//                telemetry.addData("Target left:", targetAIObject.left);
+//            }
 
             telemetry.addData("-", "------------------------------");
             telemetry.addData("-", "-- Detected April Tag ID    --");

@@ -57,7 +57,7 @@ public class Vision {
     public void init() {
 
         // Camera
-        cameraAIFront = opMode.hardwareMap.get(HuskyLens.class, RobotConstants.HardwareConfiguration.kLabelCameraAIFront);
+//        cameraAIFront = opMode.hardwareMap.get(HuskyLens.class, RobotConstants.HardwareConfiguration.kLabelCameraAIFront);
         cameraAprilTag = opMode.hardwareMap.get(WebcamName.class, RobotConstants.HardwareConfiguration.kLabelCameraAprilTag);
         cameraStream = OpenCvCameraFactory.getInstance().createWebcam(opMode.hardwareMap.get(WebcamName.class, RobotConstants.HardwareConfiguration.kLabelCameraAprilTag));
 
@@ -73,15 +73,15 @@ public class Vision {
 //        sensorAllianceTag.enableLed(RobotConstants.Sensors.AllianceTag.kIsLedEnabled);
 
         // Configure Camera(s)
-        if(!cameraAIFront.knock()) {
-            opMode.telemetry.addData(">", " ERROR: Cannot communicate with " + cameraAIFront.getDeviceName());
-        }
-        else {
-            opMode.telemetry.addData(">", " AI Camera Initialized");
-        }
+//        if(!cameraAIFront.knock()) {
+//            opMode.telemetry.addData(">", " ERROR: Cannot communicate with " + cameraAIFront.getDeviceName());
+//        }
+//        else {
+//            opMode.telemetry.addData(">", " AI Camera Initialized");
+//        }
 
         // Initialize in April Tag Mode
-        setAICameraMode(RobotConstants.Vision.HuskyLens.kLabelCameraModeAprilTag);
+//        setAICameraMode(RobotConstants.Vision.HuskyLens.kLabelCameraModeAprilTag);
 
 //        opMode.telemetry.addData("Alliance Color", getDetectedAllianceTagColor());
 
@@ -273,6 +273,7 @@ public class Vision {
     }
 
     public String getDetectedAllianceColor() {
+//    public String getDetectedAllianceTagColor() {
         String detectedColor;
         AprilTagDetection detectedLocalization = getDetectedLocalization();
 
@@ -286,6 +287,12 @@ public class Vision {
         }
         else {
             detectedColor = "unknown";
+        }
+        if(sensorAllianceTag.blue() > sensorAllianceTag.red()) {
+            detectedColor = "blue";
+        }
+        else {
+            detectedColor = "red";
         }
 
         return detectedColor;
