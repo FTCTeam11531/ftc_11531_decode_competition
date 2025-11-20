@@ -40,11 +40,19 @@ public class Vision {
     private ColorSensor sensorAllianceTag;
 
     // Camera Setting(s)
-    private Position positionCameraAprilTag = new Position(DistanceUnit.INCH,
-            0, 0, 0, 0);
+    private Position positionCameraAprilTag = new Position(
+            DistanceUnit.INCH
+            , RobotConstants.Vision.CameraAprilTag.Pose.kPositionX
+            , RobotConstants.Vision.CameraAprilTag.Pose.kPositionY
+            , RobotConstants.Vision.CameraAprilTag.Pose.kPositionZ
+            , 0);
 
-    private YawPitchRollAngles orientationCameraAprilTag = new YawPitchRollAngles(AngleUnit.DEGREES,
-            0, -90, 0, 0);
+    private YawPitchRollAngles orientationCameraAprilTag = new YawPitchRollAngles(
+            AngleUnit.DEGREES
+            , RobotConstants.Vision.CameraAprilTag.Pose.kOrientationYaw
+            , RobotConstants.Vision.CameraAprilTag.Pose.kOrientationPitch
+            , RobotConstants.Vision.CameraAprilTag.Pose.kOrientationRoll
+            , 0);
 
     // April Tag Processing
     private AprilTagProcessor processorAprilTag;
@@ -91,44 +99,44 @@ public class Vision {
         opMode.telemetry.addData(">", "-- April Tag Camera               --");
         opMode.telemetry.addData(">", "------------------------------------");
 
-//        processorAprilTag = new AprilTagProcessor.Builder()
-//                .setDrawAxes(true)
-//                .setDrawCubeProjection(true)
-//                .setDrawTagOutline(true)
-//                .setTagFamily(AprilTagProcessor.TagFamily.TAG_36h11)
-//                .setTagLibrary(AprilTagGameDatabase.getDecodeTagLibrary())
-//                .setOutputUnits(DistanceUnit.INCH, AngleUnit.DEGREES)
-//                .setCameraPose(positionCameraAprilTag, orientationCameraAprilTag)
-//                .build();
+//        processorAprilTag = AprilTagProcessor.easyCreateWithDefaults();
+        processorAprilTag = new AprilTagProcessor.Builder()
+                .setDrawAxes(true)
+                .setDrawCubeProjection(true)
+                .setDrawTagOutline(true)
+                .setTagFamily(AprilTagProcessor.TagFamily.TAG_36h11)
+                .setTagLibrary(AprilTagGameDatabase.getDecodeTagLibrary())
+                .setOutputUnits(DistanceUnit.INCH, AngleUnit.DEGREES)
+                .setCameraPose(positionCameraAprilTag, orientationCameraAprilTag)
+                .build();
 
-        processorAprilTag = AprilTagProcessor.easyCreateWithDefaults();
+        VisionPortal.Builder visionBuilder = new VisionPortal.Builder();
 
-        visionPortalAprilTag = VisionPortal.easyCreateWithDefaults(cameraAprilTag, processorAprilTag);
-
-//        VisionPortal.Builder visionBuilder = new VisionPortal.Builder();
-//
-//        visionBuilder.setCamera(cameraAprilTag);
+        visionBuilder.setCamera(cameraAprilTag);
 
         // Choose a camera resolution. Not all cameras support all resolutions.
-//        visionBuilder.setCameraResolution(new Size(640, 480));
+        visionBuilder.setCameraResolution(new Size(640, 480));
 
         // Enable the RC preview (LiveView).  Set "false" to omit camera monitoring.
-//        visionBuilder.enableLiveView(true);
+        visionBuilder.enableLiveView(true);
 
         // Set the stream format; MJPEG uses less bandwidth than default YUY2.
-//        visionBuilder.setStreamFormat(VisionPortal.StreamFormat.MJPEG);
+        visionBuilder.setStreamFormat(VisionPortal.StreamFormat.MJPEG);
 
         // Choose whether or not LiveView stops if no processors are enabled.
         // If set "true", monitor shows solid orange screen if no processors enabled.
         // If set "false", monitor shows camera view without annotations.
-//        visionBuilder.setAutoStopLiveView(false);
+        visionBuilder.setAutoStopLiveView(false);
 
         // Set and enable the processor.
-//        visionBuilder.addProcessor(processorAprilTag);
+        visionBuilder.addProcessor(processorAprilTag);
 
         // Build the Vision Portal, using the above settings.
-//        visionPortalAprilTag = visionBuilder.build();
+//        visionPortalAprilTag = VisionPortal.easyCreateWithDefaults(cameraAprilTag, processorAprilTag);
+        visionPortalAprilTag = visionBuilder.build();
 
+
+        // FTC Dashboard
         FtcDashboard.getInstance().startCameraStream(cameraStream, 0);
 
         opMode.telemetry.addData(">", "------------------------------------");
@@ -147,7 +155,7 @@ public class Vision {
      */
     public void telemetryAprilTag() {
 
-        List<AprilTagDetection> currentDetections = processorAprilTag.getDetections();
+        List<AprilTagDetection> currentDetections = getListDetectedAprilTags();
         opMode.telemetry.addData("# AprilTags Detected", currentDetections.size());
 
         // Step through the list of detections and display info for each one.
@@ -164,6 +172,10 @@ public class Vision {
                             detection.robotPose.getOrientation().getPitch(AngleUnit.DEGREES),
                             detection.robotPose.getOrientation().getRoll(AngleUnit.DEGREES),
                             detection.robotPose.getOrientation().getYaw(AngleUnit.DEGREES)));
+                    opMode.telemetry.addLine(String.format("Range, Bearing, Elevation: %6.1f, %6.1f, %6.1f",
+                            detection.ftcPose.range,
+                            detection.ftcPose.bearing,
+                            detection.ftcPose.elevation));
                 }
             } else {
                 opMode.telemetry.addLine(String.format("\n==== (ID %d) Unknown", detection.id));
@@ -177,6 +189,21 @@ public class Vision {
 
     }   // end method telemetryAprilTag()
 
+    public boolean checkTargetBearing() {
+        boolean isOnTarget = false;
+        AprilTagDetection targetDetection = getDetectedLocalization();
+
+        if(targetDetection != null) {
+            if(targetDetection.metadata != null) {
+                if(targetDetection.ftcPose.bearing >= RobotConstants.GameElements.AprilTag.Localization.kTargetRangeBearingRight &&
+                        targetDetection.ftcPose.bearing <= RobotConstants.GameElements.AprilTag.Localization.kTargetRangeBearingLeft) {
+                    isOnTarget = true;
+                }
+            }
+        }
+
+        return isOnTarget;
+    }
 
     // -----------------------------------------
     // Get Method(s)
@@ -273,7 +300,6 @@ public class Vision {
     }
 
     public String getDetectedAllianceColor() {
-//    public String getDetectedAllianceTagColor() {
         String detectedColor;
         AprilTagDetection detectedLocalization = getDetectedLocalization();
 
@@ -288,12 +314,7 @@ public class Vision {
         else {
             detectedColor = "unknown";
         }
-        if(sensorAllianceTag.blue() > sensorAllianceTag.red()) {
-            detectedColor = "blue";
-        }
-        else {
-            detectedColor = "red";
-        }
+
 
         return detectedColor;
     }
